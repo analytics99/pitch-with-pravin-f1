@@ -485,13 +485,6 @@ body[data-view="home"] .canvas { padding-top: 12px; }
 .hx-next .hx-btn { margin-top: 26px; }
 .hx-next svg { grid-column: 6 / 13; width: 100%; height: 28vw; }
 .hx-next path { fill: none; stroke: var(--text); stroke-width: 11; stroke-linecap: round; stroke-linejoin: round; }
-.hx-wall { grid-column: 1 / 13; display: grid; grid-template-columns: repeat(6, 1fr); gap: 3vw 1.6vw; margin-top: 3.4vw; }
-.hx-tl { background: none; border: 0; padding: 0; text-align: left; color: var(--text); cursor: pointer; }
-.hx-tl svg { width: 100%; height: 8.6vw; display: block; }
-.hx-tl path { fill: none; stroke: var(--text); stroke-width: 18; stroke-linecap: round; stroke-linejoin: round; }
-.hx-tl b { display: block; font-weight: 700; font-size: 17px; letter-spacing: -.01em; margin-top: 8px; }
-.hx-tl small { color: var(--muted); font-size: 14px; }
-.hx-tl.nx path, .hx-tl:hover path { stroke: var(--accent); }
 .hx-sy { display: grid; grid-template-columns: 13vw 1fr auto; align-items: baseline; padding: .6vw 0; border: 0; background: none; color: var(--text); text-align: left; cursor: pointer; }
 .hx-sy span:first-child { font: 800 clamp(30px, 3.8vw, 64px)/1.05 var(--font); letter-spacing: -.05em; font-variant-numeric: tabular-nums; }
 .hx-sy span:nth-child(2) { font: 600 clamp(20px, 2.2vw, 36px)/1.1 var(--font); letter-spacing: -.02em; }
@@ -504,8 +497,28 @@ body[data-view="home"] .canvas { padding-top: 12px; }
   .hx-h, .hx-list { grid-column: 1 / 13; } .hx-list { margin-top: 26px; } .hx-h p { max-width: none; }
   .hx-rw { grid-template-columns: 7vw 1fr auto; font-size: 24px; padding: 10px 0; }
   .hx-next { padding: 22px 18px; min-height: 0; } .hx-next .t, .hx-next svg { grid-column: 1 / 13; } .hx-next svg { height: 58vw; margin-top: 28px; } .hx-next h3 { font-size: 14vw; }
-  .hx-wall { grid-template-columns: repeat(2, 1fr); gap: 30px 14px; } .hx-tl svg { height: 30vw; }
   .hx-sy { grid-template-columns: 36vw 1fr; } .hx-sy span:first-child { font-size: 11vw; } .hx-sy span:nth-child(2) { font-size: 6.6vw; } .hx-sy small { display: none; }
+}
+
+/* ===== Home structure: rules, ruled grid, row dividers ===== */
+.hx-say, .hx-facts { border-top: 2px solid var(--text); padding-top: 26px; }
+.hx-facts { gap: 0; margin-top: clamp(28px, 4vw, 64px); }
+.hx-facts > div { padding: 0 1.6vw 1.8vw 1.6vw; }
+.hx-facts > div:nth-child(odd) { border-right: 1px solid var(--rule); padding-left: 0; }
+.hx-facts > div:nth-child(-n+2) { border-bottom: 1px solid var(--rule); margin-bottom: 1.8vw; }
+.hx-facts > div:nth-child(n+3) { padding-bottom: 0; }
+.hx-sec { margin-top: clamp(56px, 7.5vw, 120px); border-top: 2px solid var(--text); padding-top: clamp(20px, 2.4vw, 36px); }
+.hx-rw, .hx-sy { border-bottom: 1px solid var(--rule); padding-left: 0; padding-right: 0; }
+.hx-rw .b { margin-bottom: .6vw; }
+.hx-rw:hover, .hx-sy:hover { background: var(--surface); }
+.hx-list { border-top: 1px solid var(--rule); }
+.hx-next { margin-top: 0; }
+.hx-next .hx-link { margin: 0 0 0 22px; }
+@media (max-width: 760px) {
+  .hx-say, .hx-facts { padding-top: 20px; }
+  .hx-facts > div { padding: 0 12px 24px 12px; } .hx-facts > div:nth-child(odd) { padding-left: 0; } .hx-facts > div:nth-child(-n+2) { margin-bottom: 24px; }
+  .hx-sec { margin-top: 48px; }
+  .hx-next .hx-link { display: block; margin: 20px 0 0; }
 }
 </style>
 </head>
@@ -1033,16 +1046,14 @@ const CIRCUITS = {"Sakhir":{"key":"Sakhir","name":"Bahrain International Circuit
     const seasons = SEASONS.slice().reverse().map(s => { const m = model(s), c = m.table[0], done = m.todo.length === 0;
       return '<button type="button" class="hx-sy" data-go="overview" data-year="' + s.year + '"><span>' + s.year + "</span><span>" + esc(s.drivers[c.code] || c.code) + "</span><small>" + (done ? esc(c.teamName) : "In progress") + "</small></button>"; }).join("");
     const nm = nx && CIRCUITS[nx.circuit] && CIRCUITS[nx.circuit].map ? CIRCUITS[nx.circuit] : null;
-    const wall = keys.map(k => { const c = CIRCUITS[k], m = c.map; return '<button type="button" class="hx-tl' + (nx && k === nx.circuit ? " nx" : "") + '" data-circ-go="' + esc(k) + '">' + (m ? '<svg viewBox="0 0 ' + m.w + " " + m.h + '" aria-hidden="true"><path d="' + cPath(m.pts) + '"/></svg>' : "") + "<b>" + esc(c.loc) + "</b><small>" + esc(c.country) + (m && m.turns ? ", " + m.turns + " turns" : "") + "</small></button>"; }).join("");
     $("home-root").innerHTML =
       '<section class="hx-hero"><h1 class="hx-year" id="h-home" aria-label="Formula 1, ' + year + ' season">' + year + "</h1>" +
       '<div class="hx-say"><p>' + esc(full(L.code)) + " leads " + esc(full(P2.code)) + " by " + lead + " points" + (rem ? " with " + rem + " rounds to go." : ". Season complete.") + '</p><button type="button" class="hx-btn" data-go="overview" data-year="' + year + '"><i></i>See the championship</button></div>' +
       '<div class="hx-facts">' + facts.map(f => "<div><b>" + f[0] + "</b><span>" + esc(f[1]) + "</span></div>").join("") + "</div></section>" +
       '<section class="hx-sec"><div class="hx-h"><h2>Standings</h2><p>After round ' + HM.done.length + " of " + S.races.length + '. Race and sprint points.</p><button type="button" class="hx-link" data-go="overview" data-year="' + year + '">Full standings</button></div><div class="hx-list">' + rows + "</div></section>" +
       '<section class="hx-sec"><div class="hx-h"><h2>Latest race</h2><p>' + esc(lr.name) + ", round " + lr.round + '.</p><button type="button" class="hx-link" data-latest="1">Full classification</button></div><div class="hx-list">' + pod + "</div></section>" +
-      (nx ? '<section class="hx-sec"><div class="hx-next"><div class="t"><h3>' + esc(nx.loc) + "</h3><p>" + esc(nx.name) + ", round " + nx.round + " of " + S.races.length + ".</p><p>" + fmtDate(nx.date) + ", " + when(nx.date) + '.</p><button type="button" class="hx-btn" data-circ-go="' + esc(nx.circuit) + '"><i></i>Open the circuit</button></div>' +
+      (nx ? '<section class="hx-sec"><div class="hx-next"><div class="t"><h3>' + esc(nx.loc) + "</h3><p>" + esc(nx.name) + ", round " + nx.round + " of " + S.races.length + ".</p><p>" + fmtDate(nx.date) + ", " + when(nx.date) + '.</p><button type="button" class="hx-btn" data-circ-go="' + esc(nx.circuit) + '"><i></i>Open the circuit</button> <button type="button" class="hx-link" data-go="circuits">Browse all ' + keys.length + ' circuits</button></div>' +
         (nm ? '<svg viewBox="0 0 ' + nm.map.w + " " + nm.map.h + '" aria-hidden="true"><path d="' + cPath(nm.map.pts) + '"/></svg>' : "") + "</div></section>" : "") +
-      '<section class="hx-sec"><div class="hx-h"><h2>' + keys.length + ' circuits</h2><p>Track layouts, turns, lap records and every winner.</p><button type="button" class="hx-link" data-go="circuits">All circuits</button></div><div class="hx-wall">' + wall + "</div></section>" +
       '<section class="hx-sec"><div class="hx-h"><h2>Every season</h2><p>The champion of each year since ' + SEASONS[0].year + '.</p></div><div class="hx-list">' + seasons + "</div></section>";
   }
 
