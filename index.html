@@ -6,6 +6,7 @@
 <script>(function(){var d="auto",t=null;try{t=localStorage.getItem("pwp-theme")}catch(e){}
 if(t!=="dark"&&t!=="light"){t=d==="auto"?(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"):(d==="dark"?"dark":"light")}
 document.documentElement.dataset.theme=t;window.__themeDefault=d})();</script>
+<script>(function(){var d=document.documentElement;try{if(matchMedia("(prefers-reduced-motion: reduce)").matches)return}catch(e){}d.classList.add("js-anim")})();</script>
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-3VMFBQ0QGB"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{analytics_storage:'denied',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});try{if(localStorage.getItem('pwp-consent')==='yes')gtag('consent','update',{analytics_storage:'granted'})}catch(e){}gtag('js',new Date());gtag('config','G-3VMFBQ0QGB',{send_page_view:false,anonymize_ip:true});window.__ga=1;</script>
@@ -541,6 +542,145 @@ html[data-theme="dark"] .logo .ld, html[data-theme="dark"] .close .ld { display:
 .theme-toggle .sun { display: none; }
 html[data-theme="dark"] .theme-toggle .sun { display: block; } html[data-theme="dark"] .theme-toggle .moon { display: none; }
 @media (max-width: 760px) { .theme-toggle { width: 40px; height: 40px; margin-left: 0; } .topbar .socials { margin-left: auto; } }
+
+/* =====================================================================
+   ROUND CORNERS: every box-like surface, button and bar (Home gets rounding only, no motion)
+   ===================================================================== */
+:root { --radius: 22px; --radius-sm: 14px; --radius-lg: 34px; --ease: cubic-bezier(.2, .8, .2, 1); }
+.kpis { overflow: hidden; }
+.btn, .cta, .hx-btn { border-radius: 999px; }
+.hx-next { border-radius: var(--radius-lg); overflow: hidden; }
+.theme-toggle { border-radius: 50%; }
+select { border-radius: var(--radius-sm); }
+.form span { border-radius: 7px; }
+.stripe { border-radius: 99px; }
+.season-track i, .bar, .bar i, .hb, .hb i, .hx-rw .b, .hx-rw .b i { border-radius: 99px; }
+.hx-rw .b { overflow: hidden; }
+.bar i, .hb i { transform-origin: left center; }
+.hb.l i { transform-origin: right center; }
+.race, .ct { border-radius: 18px; border-bottom: 0; }
+.race[aria-pressed="true"], .ct[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--accent); }
+.consent { border-radius: 999px; padding-left: 22px; padding-right: 10px; }
+.result-meta span { white-space: normal; }
+table { border-collapse: separate; border-spacing: 0; }
+
+/* ===== Effects ===== */
+tbody tr td { transition: background-color .25s ease; }
+.card, .race, .ct, .kpi, .btn, .cta, .theme-toggle { transition: transform .4s var(--ease), box-shadow .4s var(--ease), background-color .25s ease, color .25s ease; }
+@media (hover: hover) {
+  tbody tr:hover td { background: var(--raised); border-bottom-color: transparent; }
+  tbody tr:hover td:first-child { border-radius: 14px 0 0 14px; }
+  tbody tr:hover td:last-child { border-radius: 0 14px 14px 0; }
+  .race:hover, .ct:hover { transform: translateY(-4px); box-shadow: 0 18px 30px -16px rgba(0, 0, 0, .35); }
+  .race[aria-pressed="true"]:hover, .ct[aria-pressed="true"]:hover { box-shadow: inset 0 0 0 2px var(--accent), 0 18px 30px -16px rgba(0, 0, 0, .35); }
+  .race.next:hover { box-shadow: inset 3px 0 0 var(--warning), 0 18px 30px -16px rgba(0, 0, 0, .35); }
+  .card:hover { box-shadow: 0 24px 50px -30px rgba(0, 0, 0, .35); }
+  .btn:hover, .cta:hover { transform: translateY(-2px); box-shadow: 0 12px 24px -10px rgba(225, 6, 0, .5); }
+  .kpi:hover { background: var(--raised); }
+  .theme-toggle:hover { transform: rotate(18deg) scale(1.08); }
+}
+.btn:active, .cta:active, .race:active, .ct:active { transform: scale(.97); }
+
+/* nav: pill hover + animated underline; header gets a soft shadow and rounded bottom once scrolled */
+.mainnav button { isolation: isolate; transition: color .25s ease; }
+.mainnav button::before { content: ""; position: absolute; inset: 14px 0; z-index: -1; border-radius: 999px; background: var(--surface); opacity: 0; transform: scale(.85); transition: opacity .25s ease, transform .35s var(--ease); }
+.mainnav button:hover::before { opacity: 1; transform: none; }
+.topbar { transition: box-shadow .35s ease, border-radius .35s ease; }
+.topbar.scrolled { box-shadow: 0 16px 40px -20px rgba(0, 0, 0, .45); border-radius: 0 0 26px 26px; }
+@media (max-width: 900px) {
+  .mainnav { border-top: 0; border-radius: 26px 26px 0 0; box-shadow: 0 -12px 34px -14px rgba(0, 0, 0, .35); }
+  .mainnav button::before { display: none; }
+}
+@media (max-width: 760px) { .consent { border-radius: 24px; } .topbar.scrolled { border-radius: 0 0 20px 20px; } }
+
+/* cursor spotlight on cards */
+.card, .kpis { position: relative; }
+.card::before, .kpis::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .35s ease;
+  background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgba(225, 6, 0, .07), transparent 65%); }
+html[data-theme="dark"] .card::before, html[data-theme="dark"] .kpis::before { background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, .06), transparent 65%); }
+@media (hover: hover) { .card:hover::before, .kpis:hover::before { opacity: 1; } }
+
+/* ===== Motion (only when the script confirms it can run and motion is welcome; Home included) ===== */
+@keyframes rise   { from { opacity: 0; transform: translateY(30px) scale(.985); } }
+@keyframes grow   { from { transform: scaleX(0); } }
+@keyframes slideRow { from { opacity: 0; transform: translateX(-18px); } }
+@keyframes viewIn { from { opacity: 0; transform: translateY(14px); } }
+@keyframes drift  { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(-6vmax, 5vmax, 0) scale(1.18); } }
+@keyframes trace  { from { stroke-dasharray: 1; stroke-dashoffset: 1; } to { stroke-dasharray: 1; stroke-dashoffset: 0; } }
+@keyframes pop    { from { transform: scaleY(0); opacity: 0; } }
+@keyframes blink  { 50% { opacity: .35; } }
+@keyframes navline { from { transform: scaleX(0); } }
+@keyframes navdot  { from { transform: translateX(-50%) scaleX(0); } }
+
+html.js-anim body::before, html.js-anim body::after { content: ""; position: fixed; z-index: -1; pointer-events: none; border-radius: 50%; }
+html.js-anim body::before { width: 62vmax; height: 62vmax; right: -22vmax; top: -34vmax; background: radial-gradient(circle, rgba(225, 6, 0, .15), transparent 62%); animation: drift 22s ease-in-out infinite alternate; }
+html.js-anim body::after { width: 54vmax; height: 54vmax; left: -28vmax; bottom: -34vmax; background: radial-gradient(circle, rgba(110, 110, 140, .14), transparent 62%); animation: drift 30s ease-in-out -9s infinite alternate-reverse; }
+html.js-anim[data-theme="dark"] body::before { background: radial-gradient(circle, rgba(255, 59, 48, .24), transparent 62%); }
+html.js-anim[data-theme="dark"] body::after { background: radial-gradient(circle, rgba(120, 130, 190, .16), transparent 62%); }
+
+#scrollbar { position: fixed; z-index: 60; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); transform: scaleX(0); transform-origin: left; pointer-events: none; }
+
+html.js-anim .view:not([hidden]) { animation: viewIn .55s var(--ease) backwards; }
+html.js-anim .rv:not(.in) { opacity: 0; }
+html.js-anim .rv.in:not(.st) { animation: rise .85s var(--ease) backwards; animation-delay: var(--rd, 0ms); }
+html.js-anim .rv.in:not(.st) .bar i, html.js-anim .rv.in:not(.st) .hb i { animation: grow 1.1s var(--ease) backwards; animation-delay: calc(var(--rd, 0ms) + 240ms); }
+html.js-anim tbody tr.rv.in:not(.st) { animation-name: slideRow; animation-duration: .6s; }
+
+html.js-anim .cmap .ln { stroke-dasharray: 1; }
+html.js-anim .cmap:not(.in) .ln { stroke-dashoffset: 1; }
+html.js-anim .cmap.in .ln { stroke-dashoffset: 0; transition: stroke-dashoffset 2.6s cubic-bezier(.55, .1, .2, 1) .2s; }
+html.js-anim .cmap.st .ln { transition: none; }
+html.js-anim .cmap:not(.in) .cn { opacity: 0; }
+html.js-anim .cmap.in .cn { opacity: 1; transition: opacity .8s ease 1.9s; }
+html.js-anim .cmap.st .cn { transition: none; }
+html.js-anim .cmap .sf { transform-box: fill-box; transform-origin: center; }
+html.js-anim .cmap:not(.in) .sf { transform: scale(0); }
+html.js-anim .cmap.in .sf { transform: none; transition: transform .6s cubic-bezier(.3, 1.8, .5, 1) 2.3s; }
+html.js-anim .cmap.st .sf { transition: none; }
+@media (hover: hover) { html.js-anim .ct:hover .ln { animation: trace 1.2s cubic-bezier(.5, 0, .2, 1); } }
+
+html.js-anim .season-track i { transform-origin: bottom; animation: pop .55s cubic-bezier(.3, 1.6, .5, 1) backwards; animation-delay: calc(var(--i, 0) * 30ms + .15s); }
+html.js-anim .season-track i.next { animation: pop .55s cubic-bezier(.3, 1.6, .5, 1) backwards, blink 1.7s ease-in-out 1.4s infinite; animation-delay: calc(var(--i, 0) * 30ms + .15s), 1.4s; }
+html.js-anim .mainnav button[aria-current="page"]::after { transform-origin: left; animation: navline .5s var(--ease) backwards; }
+@media (max-width: 900px) { html.js-anim .mainnav button[aria-current="page"]::after { animation-name: navdot; } }
+
+/* ===== Home motion: same look and data, it just arrives with some life ===== */
+@keyframes digit { from { opacity: 0; transform: translateY(.3em) rotateX(-80deg) scale(.88); filter: blur(22px); } }
+@keyframes ping  { 0% { box-shadow: 0 0 0 0 rgba(225, 6, 0, .65); } 70%, 100% { box-shadow: 0 0 0 14px rgba(225, 6, 0, 0); } }
+.hx-rw, .hx-sy { position: relative; isolation: isolate; }
+.hx-rw::before, .hx-sy::before { content: ""; position: absolute; inset: 3px -12px; z-index: -1; border-radius: 18px; background: var(--surface);
+  opacity: 0; transform: scale(.96); transition: opacity .3s ease, transform .4s var(--ease); }
+.hx-rw:hover, .hx-sy:hover { background: transparent; }
+.hx-rw:hover::before, .hx-sy:hover::before { opacity: 1; transform: none; }
+.hx-rw:hover .b { background: var(--raised); }
+.hx-btn { position: relative; overflow: hidden; isolation: isolate; transition: transform .4s var(--ease), box-shadow .4s var(--ease), background-color .25s ease, color .25s ease; }
+.hx-btn i { transition: transform .35s var(--ease); }
+.hx-btn:active { transform: scale(.97); }
+@media (hover: hover) {
+  .hx-btn:hover { transform: translateY(-3px); box-shadow: 0 18px 34px -12px rgba(225, 6, 0, .6); }
+  .hx-btn:hover i { transform: scale(1.7); }
+}
+.hx-next { transition: transform .4s var(--ease), box-shadow .4s var(--ease); position: relative; }
+.hx-next::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .35s ease;
+  background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgba(225, 6, 0, .07), transparent 65%); }
+html[data-theme="dark"] .hx-next::before { background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, .06), transparent 65%); }
+@media (hover: hover) { .hx-next:hover::before { opacity: 1; } }
+
+html.js-anim .rv.in:not(.st).hx-rw .b i { animation: grow 1.1s var(--ease) backwards; animation-delay: calc(var(--rd, 0ms) + 240ms); }
+html.js-anim .rl { border-top-color: transparent !important; position: relative; }
+html.js-anim .rl::after { content: ""; position: absolute; left: 0; right: 0; top: -2px; height: 2px; background: var(--text); transform: scaleX(0); transform-origin: left;
+  transition: transform 1.2s cubic-bezier(.7, 0, .2, 1) .1s; pointer-events: none; }
+html.js-anim .rl.in::after { transform: scaleX(1); }
+html.js-anim .rl.st::after { transition: none; }
+html.js-anim .hx-year { perspective: 900px; }
+html.js-anim .hx-year .dg { display: inline-block; }
+html.js-anim .hx-year .dg > span { display: inline-block; transform-origin: 50% 100%; animation: digit 1.15s var(--ease) backwards; animation-delay: calc(var(--i) * .11s); }
+html.js-anim .hx-year[data-static] .dg > span { animation: none; }
+html.js-anim .hx-btn i { animation: ping 2.2s ease-out infinite; }
+html.js-anim .hx-next svg path { stroke-dasharray: 1; }
+html.js-anim .hx-next:not(.in) svg path { stroke-dashoffset: 1; }
+html.js-anim .hx-next.in svg path { stroke-dashoffset: 0; transition: stroke-dashoffset 3.2s cubic-bezier(.55, .1, .2, 1) .3s; }
+html.js-anim .hx-next.st svg path { transition: none; }
 </style>
 </head>
 <body>
@@ -1302,6 +1442,178 @@ const CIRCUITS = {"Sakhir":{"key":"Sakhir","name":"Bahrain International Circuit
 
   setSeason(state.si);
   fromHash();
+})();
+</script>
+<script>
+/* ---- Motion layer: purely additive. Reads the DOM the app renders; never touches its data or logic. ---- */
+(function () {
+  var root = document.documentElement;
+  if (!root.classList.contains("js-anim")) return;          // reduced motion, or head script bailed
+  try {
+    var $ = function (id) { return document.getElementById(id); };
+    var NS = "http://www.w3.org/2000/svg";
+    var suppressUntil = 0;                                   // no replay when the theme toggle re-renders everything
+    var suppress = function () { return performance.now() < suppressUntil; };
+    document.addEventListener("click", function (e) {
+      if (e.target.closest && e.target.closest("#theme-toggle")) suppressUntil = performance.now() + 700;
+    }, true);
+
+    var ready = Promise.resolve();
+
+    /* ---------- selectors ---------- */
+    var RV = ".title-row, .season, .kpi, .card, .race, .ct, .team-row, .h2h-pick, .h2h-row, .podium > div, .chead, .cmap, .cstats, .chist, .legend > div, .result-meta, tbody tr, .hx-say, .hx-facts > div, .hx-h, .hx-rw, .hx-sy, .hx-next, .close";
+    var RULES = ".hx-sec, .hx-say, .hx-facts";
+    var CU = ".kpi-value, .hx-facts b, .hx-rw .n, td.pts, .legend .v, .team-row .pts, .h2h-row .v";
+    var pick = function (node, sel) {
+      var out = []; if (node.matches && node.matches(sel)) out.push(node);
+      if (node.querySelectorAll) node.querySelectorAll(sel).forEach(function (e) { out.push(e); });
+      return out;
+    };
+
+    /* ---------- count-ups (one shared rAF loop) ---------- */
+    var active = [], raf = 0;
+    function frame(now) {
+      for (var i = active.length - 1; i >= 0; i--) {
+        var a = active[i], p = Math.min(1, Math.max(0, (now - a.t0) / a.dur)), e = p === 1 ? 1 : 1 - Math.pow(2, -10 * p);
+        a.c.tn.nodeValue = p === 1 ? a.c.orig : a.c.sign + (a.c.n * e).toFixed(a.c.dec);
+        if (p === 1) active.splice(i, 1);
+      }
+      raf = active.length ? requestAnimationFrame(frame) : 0;
+    }
+    function prepCount(el) {
+      if (el.__cu !== undefined) return; el.__cu = null;
+      var tn = el.firstChild; if (!tn || tn.nodeType !== 3) return;
+      var m = /^([+\u2212\-]?)(\d+)(?:\.(\d+))?$/.exec(tn.nodeValue.trim()); if (!m) return;
+      var n = parseFloat(m[2] + (m[3] ? "." + m[3] : "")); if (!n) return;
+      var c = { tn: tn, sign: m[1], n: n, dec: m[3] ? m[3].length : 0, orig: tn.nodeValue, done: suppress() };
+      el.__cu = c; if (!c.done) tn.nodeValue = m[1] + (0).toFixed(c.dec);
+    }
+    function startCounts(target, delay) {
+      pick(target, CU).forEach(function (el) {
+        var c = el.__cu; if (!c || c.done) return; c.done = true;
+        active.push({ c: c, t0: performance.now() + delay, dur: 1300 });
+      });
+      if (active.length && !raf) raf = requestAnimationFrame(frame);
+    }
+
+    /* ---------- reveal on scroll ---------- */
+    var io = new IntersectionObserver(function (entries) {
+      var hits = entries.filter(function (e) { return e.isIntersecting; });
+      if (!hits.length) return;
+      ready.then(function () {
+        hits.forEach(function (e, k) {
+          var el = e.target; io.unobserve(el);
+          var d = Math.min(k, 10) * 60;
+          el.style.setProperty("--rd", d + "ms");
+          el.classList.add("in");
+          if (el.classList.contains("rv")) startCounts(el, d + 200);
+        });
+      });
+    }, { threshold: 0.08, rootMargin: "0px 0px -4% 0px" });
+
+    function mark(el, withIO) {
+      if (el.__m) return; el.__m = 1;
+      if (suppress()) { el.classList.add("in", "st"); pick(el, CU).forEach(function (x) { prepCount(x); }); return; }
+      io.observe(el);
+    }
+
+    /* ---------- hero year: rising digits that scramble into place ---------- */
+    function splitYear(h) {
+      if (h.getAttribute("data-split")) return; h.setAttribute("data-split", "1");
+      var txt = h.textContent; if (!/^\d+$/.test(txt)) return;
+      h.innerHTML = txt.split("").map(function (c, i) { return '<span class="dg" aria-hidden="true" style="--i:' + i + '"><span>' + c + "</span></span>"; }).join("");
+      if (suppress()) { h.setAttribute("data-static", ""); return; }
+      ready.then(function () {
+        h.querySelectorAll(".dg > span").forEach(function (s, i) {
+          var fin = s.textContent, dur = 700 + i * 260, t0 = performance.now();
+          var id = setInterval(function () {
+            if (!s.isConnected || performance.now() - t0 >= dur) { s.textContent = fin; clearInterval(id); }
+            else s.textContent = String((Math.random() * 10) | 0);
+          }, 55);
+        });
+      });
+    }
+
+    /* ---------- line charts: wipe left to right once per season ---------- */
+    var played = {}, cw = 0;
+    var chartIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return; var svg = e.target; chartIO.unobserve(svg);
+        if (!svg.isConnected || !svg.__wipe) return;
+        ready.then(function () { svg.__wipe(); });
+      });
+    }, { threshold: 0.3 });
+    function decorateChart(svg) {
+      if (svg.__ch) return; svg.__ch = 1;
+      var box = svg.parentElement, key = (box ? box.id : "") + "|" + svg.getAttribute("aria-label");
+      if (!box || played[box.id] === key || suppress()) { played[box.id] = key; return; }
+      var vb = svg.viewBox && svg.viewBox.baseVal; if (!vb || !vb.width) return;
+      var shapes = [].slice.call(svg.querySelectorAll("polyline, circle")); if (!shapes.length) return;
+      var g = document.createElementNS(NS, "g"), id = "cwipe" + (++cw);
+      shapes[0].parentNode.insertBefore(g, shapes[0]); shapes.forEach(function (s) { g.appendChild(s); });
+      var cp = document.createElementNS(NS, "clipPath"), r = document.createElementNS(NS, "rect");
+      cp.setAttribute("id", id); r.setAttribute("x", 0); r.setAttribute("y", 0); r.setAttribute("height", vb.height); r.setAttribute("width", 0);
+      cp.appendChild(r); svg.insertBefore(cp, svg.firstChild); g.setAttribute("clip-path", "url(#" + id + ")");
+      var labs = [].slice.call(svg.querySelectorAll("text[style]")); labs.forEach(function (t) { t.style.opacity = 0; t.style.transition = "opacity .6s ease"; });
+      svg.__wipe = function () {
+        var t0 = performance.now(), D = 1700;
+        (function step(now) {
+          var p = Math.min(1, (now - t0) / D), e = p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+          r.setAttribute("width", (vb.width * e + (p === 1 ? 20 : 0)).toFixed(1));
+          if (p < 1 && svg.isConnected) requestAnimationFrame(step);
+          else { labs.forEach(function (t) { t.style.opacity = 1; }); played[box.id] = key; }
+        })(t0);
+      };
+      chartIO.observe(svg);
+    }
+
+    /* ---------- decorate whatever the app renders ---------- */
+    function decorate(node) {
+      if (node.nodeType !== 1) return;
+      pick(node, CU).forEach(prepCount);
+      pick(node, RULES).forEach(function (el) { if (!el.__r) { el.__r = 1; el.classList.add("rl"); if (suppress()) el.classList.add("in", "st"); else io.observe(el); } });
+      pick(node, ".hx-year").forEach(splitYear);
+      pick(node, RV).forEach(function (el) { if (!el.__m) { el.classList.add("rv"); mark(el); } });
+      pick(node, ".cmap .ln, .hx-next svg path, .ct .ln").forEach(function (p) { p.setAttribute("pathLength", "1"); });
+      pick(node, ".season-track i").forEach(function (el, i) { el.style.setProperty("--i", i); });
+      pick(node, 'svg[aria-label*="Cumulative points"]').forEach(decorateChart);
+    }
+    var main = document.querySelector("main.canvas");
+    new MutationObserver(function (muts) {
+      muts.forEach(function (m) { m.addedNodes.forEach(decorate); });
+    }).observe(main, { childList: true, subtree: true });
+    decorate(main);
+
+    /* ---------- scroll: progress bar, header shadow, hero parallax ---------- */
+    var bar = document.createElement("div"); bar.id = "scrollbar"; bar.setAttribute("aria-hidden", "true"); document.body.appendChild(bar);
+    var top = document.querySelector(".topbar"), pending = false;
+    function onScroll() {
+      if (pending) return; pending = true;
+      requestAnimationFrame(function () {
+        pending = false;
+        var h = document.documentElement, y = h.scrollTop || window.pageYOffset, max = h.scrollHeight - h.clientHeight;
+        bar.style.transform = "scaleX(" + (max > 0 ? Math.min(1, y / max) : 0).toFixed(4) + ")";
+        if (top) top.classList.toggle("scrolled", y > 8);
+      });
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    onScroll();
+
+    /* ---------- cursor spotlight on cards ---------- */
+    if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      var lastEl = null;
+      document.addEventListener("pointermove", function (e) {
+        var el = e.target.closest && e.target.closest(".card, .kpis, .hx-next"); if (!el) return;
+        var r = el.getBoundingClientRect(); lastEl = el;
+        el.style.setProperty("--mx", (e.clientX - r.left).toFixed(0) + "px"); el.style.setProperty("--my", (e.clientY - r.top).toFixed(0) + "px");
+      }, { passive: true });
+    }
+  } catch (err) {
+    root.classList.remove("js-anim");                        // fail open: everything shows, nothing hidden
+    
+    if (window.console) console.warn("motion layer disabled:", err);
+  }
 })();
 </script>
 </body>
