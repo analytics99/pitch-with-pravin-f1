@@ -1047,7 +1047,9 @@ const CIRCUITS = {"Sakhir":{"key":"Sakhir","name":"Bahrain International Circuit
       '<div class="v">' + s.pts + "<small>" + (i === 0 ? "pts" : "−" + (top[0].pts - s.pts)) + "</small></div></div>").join("");
   }
   function drawCharts() { if (typeof M === "undefined" || !M) return; renderChart(); renderTeamsView(); }
-  let chartTimer; window.addEventListener("resize", () => { clearTimeout(chartTimer); chartTimer = setTimeout(drawCharts, 160); });
+  // Only redraw when the width changes: on phones the address bar sliding in and out fires resize (height only) and would replay the animations.
+  let chartTimer, chartW = window.innerWidth;
+  window.addEventListener("resize", () => { if (window.innerWidth === chartW) return; chartW = window.innerWidth; clearTimeout(chartTimer); chartTimer = setTimeout(drawCharts, 160); });
   function renderChart() {
     const top = M.table.slice(0, 5); top.forEach(s => { s.tag = s.code; });
     lineChart("chart", "legend", top, "Cumulative points for the top five drivers");
